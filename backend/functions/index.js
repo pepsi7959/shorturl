@@ -1,25 +1,18 @@
 const functions = require('firebase-functions');
+const express = require('express');
+const cors = require('cors');
+const app = express();
 
+const auth = require('./components/v1/auth');
+const shortUrl = require('./components/v1/shorturl');
 
-exports.getShortUrl = functions.https.onRequest((req, res) => {
-  let originUrl = "";
-  let shortUrl = "";
-  functions.logger.info(req.query);
-  res.setHeader('Access-Control-Allow-Origin', req.headers.origin || 'http://localhost:3001' );
-  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With, userid, token');
+app.use(express.json())
+app.use(cors({origin: true}));
 
-  
-  if( req.query.originUrl !== undefined ) {
-    originUrl = req.query.originUrl;
-  }
-
-  shortUrl = "https://abit.ly/AbyXx";
-
-  res.send({httpCode: 20000,
-    data: {
-      originUrl: originUrl,
-      shortUrl: shortUrl
-    }
-  });
+app.use('/v1/auth', auth);
+app.use('/v1/shorturl', shortUrl);
+app.get('/v1/ping', (req, res) => {
+  res.send("ok");
 });
+
+exports.api = functions.https.onRequest(app);

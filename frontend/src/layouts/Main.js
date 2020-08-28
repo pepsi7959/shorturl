@@ -13,6 +13,7 @@ import routes from "routes.js";
 import styles from "assets/jss/material-dashboard-pro-react/layouts/authStyle.js";
 
 import register from "assets/img/register.jpeg";
+import login from "assets/img/login.jpeg";
 
 const useStyles = makeStyles(styles);
 
@@ -48,6 +49,8 @@ export default function Pages(props) {
   const getBgImage = () => {
     if (window.location.pathname.indexOf("/main/home") !== -1) {
       return register;
+    } else if (window.location.pathname.indexOf("/main/login") !== -1) {
+      return login;
     } 
   };
   const getActiveRoute = routes => {

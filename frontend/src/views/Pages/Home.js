@@ -23,25 +23,35 @@ import styles from "assets/jss/material-dashboard-pro-react/views/registerPageSt
 
 const useStyles = makeStyles(styles);
 
-export default function RegisterPage() {
-  
-  var originUrlHandler = (event) => {
-    setOriginUrl(event.target.value);
-  }
-
-  var onClickGetUrl = (event) => {
-    fetch(`https://us-central1-shorturl-7959.cloudfunctions.net/getShortUrl?originUrl=${originUrl}`)
-    .then( r => r.json())
-    .then( data => {
-      console.log(data);
-      setShortUrl(data.data.shortUrl);
-    })
-    .catch( err => console.log(err));
-  }
+export default function HomePage() {
 
   const classes = useStyles();
   const [originUrl, setOriginUrl] = useState("");
-  const [shortUrl, setShortUrl] = useState("");
+  const [shortUrl, setShortUrl] = useState(null);
+
+  const originUrlHandler = (event) => {
+    setOriginUrl(event.target.value);
+  }
+
+  const copyHandler = () => {
+    if( shortUrl !== null ) {
+      alert("Copied! " + shortUrl); 
+    }
+  }
+
+  var onClickGetUrl = (event) => {
+    fetch(`https://us-central1-shorturl-7959.cloudfunctions.net/api/v1/shorturl?originUrl=${originUrl}`)
+    .then( r => r.json())
+    .then( data => {
+      console.log(data);
+      setShortUrl('dede.ml/' + data.data.shortUrl);
+    })
+    .catch( err =>  {
+      console.log(err)
+      setShortUrl(null);
+    });
+  }
+
 
   return (
     <div className={classes.container}>
@@ -78,7 +88,7 @@ export default function RegisterPage() {
                         className: classes.customFormControlClasses
                       }}
                       inputProps={{
-                        onClick: ()=>{alert("Copied! " + shortUrl)},
+                        onClick: copyHandler,
                         value: shortUrl,
                         disabled: true,
                         startAdornment: (
